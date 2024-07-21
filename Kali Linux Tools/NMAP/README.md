@@ -214,6 +214,57 @@ nmap -A 192.168.1.100
 ```
 A opção `-A` habilita a detecção de sistema operacional, versões de serviços, script scanning e traceroute.
 
+----
+
+# Conexões TCP/UDP
+
+Analisar as conexões com um serviço.
+
+### Analisando uma rede com o NMAP
+
+`nmap [SITE URL]`
+
+**Output**:
+
+```bash
+Starting Nmap 7.94SVN ( https://nmap.org ) at 2024-07-21 20:19 -03
+Nmap scan report for [URL] ([IP ADDRESS])
+Host is up (0.014s latency).
+Other addresses for [URL] (not scanned): [MAC ADDRESS]
+Not shown: 996 filtered tcp ports (no-response)
+PORT                    STATE SERVICE
+[PORT NUMBER]/[TYPE]     open   http
+```
+
+> **Comando**: `host`
+
+Escaneamento do hosting de um serviço.
+
+```bash
+host [URL (SEM HTTP)]
+```
+
+> **Comando**: `nc`
+
+Comando para testar as portas abertas do serviço.
+
+```bash
+nc [IP ADDRESS] [PORT]
+[http req]
+```
+
+> **Comando**: `nmap [URL SITE || IP ADDRESS] -p [PORTS]`
+
+Exemplos: `nmap google.com -p 80,21` ou `nmap google.com -p 80,21 -sV`
+
+### Identificando rostos
+
+`nmap [IP ADDRES RANGE] -sn -T<0-5>`
+
+A opção `T<0-5>` (**0** para a analise mais aprofundada e lenta; **5** para analise menos aprofundada e rápida)
+
+----
+
 ### Conclusão
 
 O Nmap é uma ferramenta poderosa e flexível para análise de rede e auditoria de segurança. Com seus diversos modos de varredura e opções avançadas, ele pode fornecer informações detalhadas sobre a infraestrutura de rede, ajudando administradores e profissionais de segurança a proteger melhor seus ambientes. Para um uso mais avançado, explorar a documentação oficial e praticar com diferentes cenários é altamente recomendado.
