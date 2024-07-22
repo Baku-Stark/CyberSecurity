@@ -2,7 +2,6 @@
 
 ## Buscando por falhas nas portas
 
-
 ### Nmap
 `nmap -v -A [URL SITE]`
 
@@ -140,8 +139,7 @@ bancocn.com mail is handled by 10 googlemail.com.
 
 ### Também utilizei o NMAP
 
-**Nmap**: `nmap -v -A www.bancocn.com`
-
+Nmap: `nmap -v -A www.bancocn.com`
 
 ### Resultados
 
@@ -152,6 +150,12 @@ Após a análise de portas no site, descobri que a proteção é feita por um pr
 
 - **Name Server**: MEGAN.NS.CLOUDFLARE.COM
 - **Name Server**: NOEL.NS.CLOUDFLARE.COM
+
+- **Portas abertas do serviço web**:
+    - 80/tcp   open  http
+    - 443/tcp  open  https
+    - 8080/tcp open  http-proxy
+    - 8443/tcp open  https-alt
 
 
 **IP INFO (PROXY)**
@@ -207,14 +211,6 @@ Ref:            https://rdap.arin.net/registry/ip/104.16.0.0
 
 ### Sobre o site
 
-- **Paginação (Principal)**
-    - **Home**: http://www.bancocn.com/index.php
-    - **O/ Pages**: http://www.bancocn.com/cat.php?id={:id}(1/3)
-
-----
-
-## Começando Ataque
-
 ### dirb
 
 **DIRB** é um scanner web. Esta ferramenta pega por serviços existentes (e/ou escondidos) numa aplicação WEB. Ele funciona, basicamente, lançando senhas (BruteForce) de um dicionário no site no servidor web do site, analisando e enviando os resultados no terminal.
@@ -224,12 +220,37 @@ Ref:            https://rdap.arin.net/registry/ip/104.16.0.0
 
 `dirb http://www.bancocn.com/`
 
-> **dirb response:**
+> **Subdominios**
 
-- **Página de admin**: http://www.bancocn.com/admin/login.php
-    - **Uploads**: http://www.bancocn.com/admin/uploads/
+```txt
+GENERATED WORDS: 4612                                                          
 
-- **Assets**: http://www.bancocn.com/assets/
+---- Scanning URL: http://www.bancocn.com/ ----
+==> DIRECTORY: http://www.bancocn.com/admin/                                                       
+==> DIRECTORY: http://www.bancocn.com/assets/                                                      
+==> DIRECTORY: http://www.bancocn.com/classes/                                                     
+==> DIRECTORY: http://www.bancocn.com/css/                                                         
+==> DIRECTORY: http://www.bancocn.com/images/                                                      
++ http://www.bancocn.com/index.php (CODE:200|SIZE:12522)                                           
++ http://www.bancocn.com/robots.txt (CODE:200|SIZE:31)                                             
++ http://www.bancocn.com/server-status (CODE:403|SIZE:280)                                         
+                                                                                                   
+---- Entering directory: http://www.bancocn.com/admin/ ----
++ http://www.bancocn.com/admin/bbclone (CODE:520|SIZE:15)                                          
++ http://www.bancocn.com/admin/bb-hist (CODE:520|SIZE:15)                                          
++ http://www.bancocn.com/admin/bb-histlog (CODE:520|SIZE:15)                                       
++ http://www.bancocn.com/admin/bboard (CODE:520|SIZE:15)                                           
++ http://www.bancocn.com/admin/bbs (CODE:520|SIZE:15)                                              
++ http://www.bancocn.com/admin/bc (CODE:520|SIZE:15)                                               
++ http://www.bancocn.com/admin/bd (CODE:520|SIZE:15)                                               
++ http://www.bancocn.com/admin/bdata (CODE:520|SIZE:15)                                            
++ http://www.bancocn.com/admin/be (CODE:520|SIZE:15)                                               
++ http://www.bancocn.com/admin/bea (CODE:520|SIZE:15)                                              
++ http://www.bancocn.com/admin/bean (CODE:520|SIZE:15)                                             
++ http://www.bancocn.com/admin/beans (CODE:520|SIZE:15)                                            
++ http://www.bancocn.com/admin/index.php (CODE:302|SIZE:0)                                         
+==> DIRECTORY: http://www.bancocn.com/admin/uploads/                         
+```
 
 - **Classes (PHP)**: http://www.bancocn.com/classes/
 
@@ -250,6 +271,39 @@ Ref:            https://rdap.arin.net/registry/ip/104.16.0.0
 ```txt
 User-agent: *
 Disallow: /admin
+```
+
+----
+
+## Testando falhas no site
+
+Falhas de segurança que encontrei no site `bancocn.com`
+
+**Resposta do console**: `JQMIGRATE: Migrate is installed, version 1.4.1`
+
+### XSS (Cross Site Scripting)
+
+A partir das urls (abaixo), testei comando de JavaScript para verificar se o comando executaria
+
+**O/ Pages [Contato/Emprestimos/Historia]**: http://www.bancocn.com/cat.php?id={:id}(1/3)
+
+**Comando**:
+```txt
+http://www.bancocn.com/cat.php?id=%3Cscript%3Ealert(%22Hello%22)%3C/script%3E
+```
+
+### SQL (MariaDB)
+
+Ao executar o comando acima, descobri também que o site apresentou o erro de sintaxe para erros de banco de dados, especificamente, para MariaDB.
+
+```txt
+http://www.bancocn.com/cat.php?id='
+```
+
+**SQLMap Official Site**: https://sqlmap.org/
+
+```bash
+sudo apt-get install sqlmap
 ```
 
 
