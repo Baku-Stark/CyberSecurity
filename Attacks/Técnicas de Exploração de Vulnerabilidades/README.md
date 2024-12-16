@@ -7,7 +7,6 @@ Pasta com conteúdos do bootcamp de cybersecurity.
 • msfconsole: modo console
     • `search vsftpd`
     
-    
 • msfweb: Interface gráfica via browser;
 • msfplayload: gerar e customizar payloads;
 • msfcli: Interface de automatização de invasão;
